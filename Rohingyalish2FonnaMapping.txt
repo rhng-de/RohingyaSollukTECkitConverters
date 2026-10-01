@@ -1,0 +1,807 @@
+﻿; This file was edited using TECkitMappingEditorU.exe v4.0.0.0 on 5/13/2019.
+;   Conversion Type = Unicode_to_Unicode
+;   Left-hand side font = Charis SIL Compact;12
+;   Right-hand side font = Scheherazade New Rohingya;20.25
+;   Main Window Position = 0,0,658,713
+;   Left-hand side Character Map Window Position = 658,0,457,447
+;   Right-hand side Character Map Window Position = 657,394,457,430
+
+LHSName                 "Unicode-Rohingyalish-Roman"
+RHSName                 "Unicode-Rohingya-Arabic"
+LHSDescription          "Unicode Rohingyalish Roman script encoding"
+RHSDescription          "Unicode Rohingya Arabic script encoding"
+Version                 "0.2"
+Contact                 "mailto:converter@rhng.de"
+RegistrationAuthority   "rhng.de"
+RegistrationName        "Rohingyalish to Arabic Fonna conversion 0.2"
+
+; Due to the Rohingyalish orthography not being fixed and being used very inconsistently,
+; you need to check your text for the following mistakes manually:
+; 1. Usage of 'oy' instead of 'oi' or 'o' like: 'goyjé, goyjum' and potentially 'hoyto' etc.
+; 2. Usage of 'au' diphtong mistakes: 'sáuaun' and rare loanwords: 'rwaháung' 
+; 3. Put spaces inbetween words like 'XXXoñl' XXXfinger!
+; 4. Take care of special cases of dh: ledholom --> led holom
+
+; TODO drop all final 'h' after dealing with th/dh/kh because they are not needed(wrong?)!
+; TODO drop all dashes! [we just ignore them]
+; These are the possible tones: a (base), á (HARBHAY) >> U+08EA, áa (TAHALA) >> U+08EB, aá (TANA) >> U+08EC
+; These are the special (glides?) Kinna w U+08AB and Kinna y U+08AC
+
+
+
+
+pass ( Unicode )
+
+class[UpperCase] = ( U+0041..U+005A U+00C0..U+00DC U+014A U+00C7)
+class[LowerCase] = ( U+0061..U+007A U+00E0..U+00FC U+014B U+00E7)
+
+[UpperCase]    >  [LowerCase]
+
+
+pass (Unicode)
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+;Exceptions for whole words
+'alla' / (#|[WordBreak]) _ (#|[WordBreak]) > U+FDF2
+'allah' / (#|[WordBreak]) _ (#|[WordBreak]) > U+FDF2
+'allar' / (#|[WordBreak]) _ (#|[WordBreak]) >U+FDF2 U+064E U+0631 U+06E1
+
+
+
+pass (Unicode)
+;Fix false guta instead of acute
+'à' > 'á' 
+'è' > 'é' 
+'ì' > 'í' 
+'ò' > 'ó' 
+'ù' > 'ú'
+
+
+pass (Unicode)
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+'jja' / _ (#|[WordBreak]) > U+062C U+0651 U+064E
+
+
+
+pass ( Unicode )
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+class[vowel] = ( 'a' 'e' 'i' 'o' 'u' 'á' 'é' 'í' 'ó' 'ú')
+class[vowel_except_i] = ( 'a' 'e' 'o' 'u' 'á' 'é' 'ó' 'ú')
+class[consonant] = ('q' 'w' 'r' 't' 'y' 'p' 's' 'd' 'f' 'g' 'h' 'j' 'k' 'l' 'z' 'x' 'c' 'v' 'b' 'n' 'm' 'ç' U+062E U+0688 U+06A0) 
+
+class[double_consonant] = ('ll' 'kk' 'thth' 'tt' 'nn')
+class[i_vowel] = ('í' 'i')
+class[a_vowel] = ('á' 'a')
+class[e_vowel] = ('é' 'e')
+; This pass is not used - treated later
+;TODO handle ai +CC+ a case -> a+CC+ya CHECK if this is true for ll and ss and cc etc.
+;[a_vowel]=a [i_vowel]=b [double_consonant]=c [a_vowel]=d > @a @c 'y' @d
+;[e_vowel]=a [i_vowel]=b [double_consonant]=c [a_vowel]=d > @a @c 'y' @d
+
+
+;Two character consonants
+;Taking care of the single consonants that are written with two symbols first
+;kh at the beginning of a word: 
+'kh' / (#|[WordBreak]) _  > U+062E
+;consonant+kh 
+[consonant]=a 'kh' > @a U+062E
+'dh'                      > U+0688
+'th'                      > U+0679
+'ng'                      > U+06A0
+
+
+
+
+pass ( Unicode )
+class[vowel_excl_i] = ( 'a' 'e' 'o' 'u' 'á' 'é' 'ó' 'ú')
+;Fix i followed by a vowel (inserts the expected y)
+'í' [vowel_excl_i]=a > 'í' U+064A @a
+'i' [vowel_excl_i]=a > 'i' U+064A @a
+'í' 'ñ' [vowel_excl_i]=a > 'í' U+0646 U+064A @a
+'i' 'ñ' [vowel_excl_i]=a > 'i' U+0646 U+064A @a
+
+pass ( Unicode )
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+class[vowel] = ( 'a' 'e' 'i' 'o' 'u' 'á' 'é' 'í' 'ó' 'ú')
+class[vowel_except_i] = ( 'a' 'e' 'o' 'u' 'á' 'é' 'ó' 'ú')
+class[consonant] = ('q' 'w' 'r' 't' 'y' 'p' 's' 'd' 'f' 'g' 'h' 'j' 'k' 'l' 'z' 'x' 'c' 'v' 'b' 'n' 'm' 'ç' U+062E U+0679 U+0688 U+06A0) 
+;Fix all final h because the don't exist in Rohingyalish
+'h' / _ (#|[WordBreak]) > ''
+
+
+pass ( Unicode )
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+class[vowel] = ( 'a' 'e' 'i' 'o' 'u' 'á' 'é' 'í' 'ó' 'ú')
+class[vowel_except_i] = ( 'a' 'e' 'o' 'u' 'á' 'é' 'ó' 'ú')
+class[consonant] = ('q' 'w' 'r' 't' 'y' 'p' 's' 'd' 'f' 'g' 'h' 'j' 'k' 'l' 'z' 'x' 'c' 'v' 'b' 'n' 'm' 'ç' U+062E U+0679 U+0688 U+06A0) 
+;W-glide 1
+;Taking care of the w-glide in final position
+[consonant]=a 'w' 'á' / _ (#|[WordBreak]) > @a U+08EA  U+08AB U+064E
+[consonant]=a 'w' 'a' / _ (#|[WordBreak]) > @a U+08AB U+064E
+;Glides as part of diphtongs are treated later
+;Y-glide 1
+;Taking care of the y-glide in final position TODO check if possible with other vowel
+[consonant]=a 'y' 'á' / _ (#|[WordBreak]) > @a U+064E U+08EA U+08AC
+[consonant]=a 'y' 'a' / _ (#|[WordBreak]) > @a U+064E U+08EC
+;Glides as part of diphtongs are treated later
+
+
+
+
+pass (Unicode)
+;OOI
+;Take care of ooi -> ouy
+'óñoñiñ' > U+08E5 U+08EB U+064A U+06E1 U+0646
+'oñóñiñ' > U+08E5 U+08EC U+064A U+06E1 U+0646
+'oñoñiñ' > U+08E5 U+064A U+06E1 U+0646
+'óñoñi' > U+08E5 U+08EB U+064A U+06E1 U+0646
+'oñóñi' > U+08E5 U+08EC U+064A U+06E1 U+0646
+'oñoñi' > U+08E5 U+064A U+06E1 U+0646
+'óñoiñ' > U+08E5 U+08EB U+064A U+06E1 U+0646
+'oñóiñ' > U+08E5 U+08EC U+064A U+06E1 U+0646
+'oñoiñ' > U+08E5 U+064A U+06E1 U+0646
+'óoñiñ' > U+08E5 U+08EB U+064A U+06E1 U+0646
+'oóñiñ' > U+08E5 U+08EC U+064A U+06E1 U+0646
+'ooñiñ' > U+08E5 U+064A U+06E1 U+0646
+'óñoi' > U+08E5 U+08EB U+064A U+06E1 U+0646
+'oñói' > U+08E5 U+08EC U+064A U+06E1 U+0646
+'oñoi' > U+08E5 U+064A U+06E1 U+0646
+'óoñi' > U+08E5 U+08EB U+064A U+06E1 U+0646
+'oóñi' > U+08E5 U+08EC U+064A U+06E1 U+0646
+'ooñi' > U+08E5 U+064A U+06E1 U+0646
+'óoiñ' > U+08E5 U+08EB U+064A U+06E1 U+0646
+'oóiñ' > U+08E5 U+08EC U+064A U+06E1 U+0646
+'ooiñ' > U+08E5 U+064A U+06E1 U+0646
+'óoi' > U+08E5 U+08EB U+064A U+06E1
+'oói' > U+08E5 U+08EC U+064A U+06E1
+'ooi' > U+08E5 U+064A U+06E1
+
+
+
+
+pass (Unicode)
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+
+;UI TODO 
+
+
+
+
+pass (Unicode)
+;OU
+; take care of ou dipthong first (including possible wrong forms):
+'óuñouñ' > U+08E5 U+08EB U+0646
+'ouñóuñ' > U+08E5 U+08EC U+0646
+'óñuou' > U+08E5 U+08EB U+0646
+'oñuóu' > U+08E5 U+08EC U+0646
+'óuñou' > U+08E5 U+08EB U+0646
+'ouñóu' > U+08E5 U+08EC U+0646
+'óuoñu' > U+08E5 U+08EB U+0646
+'ouóñu' > U+08E5 U+08EC U+0646
+'óuou' > U+08E5 U+08EB
+'ouóu' > U+08E5 U+08EC
+'óñoñu'  > U+08E5 U+08EB U+0646
+'oñóñu'  > U+08E5 U+08EC U+0646
+'óñou'  > U+08E5 U+08EB U+0646
+'oñóu'  > U+08E5 U+08EC U+0646
+'óoñu'  > U+08E5 U+08EB U+0646
+'oóñu'  > U+08E5 U+08EC U+0646
+'óou'  > U+08E5 U+08EB
+'oóu'  > U+08E5 U+08EC
+'oou'  > U+08E5
+'óñoñu'  > U+08E5 U+08EB U+0646
+'oñóñu'  > U+08E5 U+08EC U+0646
+'oñoñu'  > U+08E5 U+0646
+'óñou'  > U+08E5 U+08EB U+0646
+'oñóu'  > U+08E5 U+08EC U+0646
+'oñou'  > U+08E5 U+0646
+'óoñu'  > U+08E5 U+08EB
+'oóñu'  > U+08E5 U+08EC
+'ooñu'  > U+08E5 U+0646
+'oñúñ'   > U+08E5 U+08EA U+0646
+'óñuñ'   > U+08E5 U+08EA U+0646
+'oñuñ'   > U+08E5 U+0646
+'oúñ'   > U+08E5 U+08EA U+0646
+'óuñ'   > U+08E5 U+08EA U+0646
+'ouñ'   > U+08E5 U+0646
+'oñú'   > U+08E5 U+08EA U+0646
+'óñu'   > U+08E5 U+08EA U+0646
+'oñu'   > U+08E5 U+0646
+'oú'   > U+08E5 U+08EA
+'óu'   > U+08E5 U+08EA
+'ou'   > U+08E5
+
+
+
+
+pass (Unicode)
+;Take care of double vowels first and then handle diphtongs [THIS IS DIFFERENT FOR HANIFI]
+'áá' > U+064E U+08EA
+'áa' > U+064E U+08EB
+'aá' > U+064E U+08EC
+'aa' > U+064E 
+'éé' > U+08E6 U+08ED
+'ée' > U+08E6 U+08EE
+'eé' > U+08E6 U+08EF
+'ee' > U+08E6 
+'íí' > U+0650 U+08ED
+'íi' > U+0650 U+08EE
+'ií' > U+0650 U+08EF
+'ii' > U+0650 
+'óó' > U+08E4 U+08EA
+'óo' > U+08E4 U+08EB 
+'oó' > U+08E4 U+08EC
+'oo' > U+08E4 
+'úú' > U+064F U+08EA
+'úu' > U+064F U+08EB
+'uú' > U+064F U+08EC
+'uu' > U+064F 
+
+
+
+
+pass (Unicode)
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+;W-glide 2
+; Finales wa? U+08AB
+;TODO: handle U + vowel
+;UA
+;Take care of ua -> uwa [Nazalisation is not consistent in Rohingyalish]
+;TODO CHECK THIS AGAIN!!!
+'úñáñ' > 'úñwáñ'
+'úñañ' > 'úñwañ'
+'uñáñ' > 'uñwáñ'
+'uñañ' > 'uñwañ'
+'úñá'  > 'úñwáñ' 
+'úña'  > 'úñwañ' 
+'uñá'  > 'uñwáñ' 
+'uña'  > 'uñwañ' 
+'úáñ'  > 'úñwáñ' 
+'úañ'  > 'úñwañ' 
+'uáñ'  > 'uñwáñ' 
+'uañ'  > 'uñwañ' 
+'úá'   > 'úwá'  
+'úa'   > 'úwa'  
+'uá'   > 'uwá'  
+'ua'   > 'uwa'  
+
+
+
+
+
+
+pass (Unicode)
+;regular vowels
+'á'        >   U+064E U+08EA
+'a'        >   U+064E
+'é'        >   U+08E6 U+08ED
+'e'        >   U+08E6
+'í'        >   U+0650 U+08ED
+'i'        >   U+0650
+'ó'        >   U+08E4 U+08EA
+'o'        >   U+08E4
+'ú'        >   U+064F U+08EA
+'u'        >   U+064F
+
+
+
+
+pass (Unicode)
+;Take care of same vowels with nasal in between - ou has been treated already
+class[arabic_tone] = ( U+08EA..U+08EF )
+class[arabic_vowel] = ( U+064E U+064F U+0650 U+08E4 U+08E5 U+08E6 )
+U+064E U+08EA 'ñ' U+064E U+08EA > U+064E U+08EA 'ñ'
+U+064E U+08EA 'ñ' U+064E > U+064E U+08EB 'ñ'
+U+064E 'ñ' U+064E U+08EA > U+064E U+08EC 'ñ'
+U+064E 'ñ' U+064E  > U+064E 'ñ'
+U+064F U+08EA 'ñ' U+064F U+08EA > U+064F U+08EA 'ñ'
+U+064F U+08EA 'ñ' U+064F > U+064F U+08EB 'ñ'
+U+064F 'ñ' U+064F U+08EA > U+064F U+08EC 'ñ'
+U+064F 'ñ' U+064F  > U+064F 'ñ'
+U+08E4 U+08EA 'ñ' U+08E4 U+08EA > U+08E4 U+08EA 'ñ'
+U+08E4 U+08EA 'ñ' U+08E4 > U+08E4 U+08EB 'ñ'
+U+08E4 'ñ' U+08E4 U+08EA > U+08E4 U+08EC 'ñ'
+U+08E4 'ñ' U+08E4  > U+08E4 'ñ'
+U+08E6 U+08ED 'ñ' U+08E6 U+08ED > U+08E6 U+08ED 'ñ'
+U+08E6 U+08ED 'ñ' U+08E6 > U+08E6 U+08EE 'ñ'
+U+08E6 'ñ' U+08E6 U+08ED > U+08E6 U+08EF 'ñ'
+U+08E6 'ñ' U+08E6  > U+08E6 'ñ'
+U+0650 U+08ED 'ñ' U+0650 U+08ED > U+0650 U+08ED 'ñ'
+U+0650 U+08ED 'ñ' U+0650 > U+0650 U+08EE 'ñ'
+U+0650 'ñ' U+0650 U+08ED > U+0650 U+08EF 'ñ'
+U+0650 'ñ' U+0650  > U+0650 'ñ'
+
+
+
+pass ( Unicode )
+;TODO Catch edge case 'ñn' combination
+'ñn' > 'n'
+
+
+pass (Unicode)
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+;Nasals:
+;Take care of nasals inbetween vowels eg. báñina
+;TODO Take care of the nasal in final position
+;'ñ' / _ (#|[WordBreak]) > U+0646
+;U+006E U+0303 / _ (#|[WordBreak]) > U+0646
+;Take care of nasal
+'ñ' > U+0646
+U+006E U+0303 > U+0646
+
+
+
+
+pass (Unicode)
+class[arabic_vowel_excl_i] = ( U+064E U+064F U+08E4..U+08E6)
+class[arabic_vowel_a_o_ou_u] = (U+064E U+064F U+08E4 U+08E5)
+class[arabic_vowel_e_i] = (U+0650 U+08E6)
+class[arabic_tone] = ( U+08EA..U+08EF )
+class[arabic_tone_harbahay] = ( U+08EA U+08ED )
+;i after vowel --> y
+; ERROR The logic for the vowels is wrong here!!! 
+[arabic_vowel_excl_i]=a [arabic_tone_harbahay]=b U+0650 U+08ED > @a @b U+064A U+06E1
+[arabic_vowel_a_o_ou_u]=a U+08EA U+0650 > @a U+08EB U+064A U+06E1
+[arabic_vowel_e_i]=a U+08ED U+0650 > @a U+08EE U+064A U+06E1
+[arabic_vowel_a_o_ou_u]=a U+0650 U+08ED > @a U+08EC U+064A U+06E1
+[arabic_vowel_e_i]=a U+0650 U+08ED > @a U+08EF U+064A U+06E1
+[arabic_vowel_excl_i]=a U+0650 > @a U+064A U+06E1
+;i after nasal
+[arabic_vowel_excl_i]=a [arabic_tone_harbahay]=b U+0646 U+0650 U+08ED > @a @b U+0646 U+064A U+06E1
+[arabic_vowel_a_o_ou_u]=a U+08EA  U+0646 U+0650 > @a U+08EB U+0646 U+064A U+06E1
+[arabic_vowel_e_i]=a U+08ED U+0646 U+0650 > @a U+08EE U+0646 U+064A U+06E1
+[arabic_vowel_a_o_ou_u]=a U+0646 U+0650 U+08ED > @a U+08EC U+0646 U+064A U+06E1
+[arabic_vowel_e_i]=a U+0646 U+0650 U+08ED > @a U+08EF U+0646 U+064A U+06E1
+[arabic_vowel_excl_i]=a U+0646 U+0650 > @a U+0646 U+064A U+06E1
+
+
+
+
+pass (Unicode)
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+class[consonant_no_n] = ('q' 'w' 'r' 't' 'y' 'p' 's' 'd' 'f' 'g' 'h' 'j' 'k' 'l' 'z' 'x' 'c' 'v' 'b' 'm' 'ç' U+062E U+0679 U+0688 U+064A U+06A0)
+;N
+;UNNECCESSARY? Take care of double n - intermediate step shadda will be added later
+;UNNECCESSARY? 'n' 'n' > U+646 U+646
+;Take care of n end of word
+'n' / _ (#|[WordBreak]) > U+0646 U+06E1
+;Take care of n end of syllable
+'n' [consonant_no_n]=a > U+0646 U+06E1 @a 
+;Take care of all other n
+'n' > U+0646
+
+
+
+
+pass (Unicode)
+;regular consonants
+'b'        >   U+0628
+'c'        >   U+0634
+'d'        >   U+062F
+'f'        >   U+0641
+'g'        >   U+06AF
+'h'        >   U+0647
+'j'        >   U+062C
+'k'        >   U+0643
+'l'        >   U+0644
+'m'        >   U+0645
+'p'        >   U+067E
+'q'        >   U+0642
+'r'        >   U+0631
+'ç'        >   U+0691
+'s'        >   U+0633
+'t'        >   U+062A
+'v'        >   U+0648
+'w'        >   U+0648
+'x'        >   U+062D
+'y'        >   U+064A
+'z'        >   U+0632
+
+
+
+
+pass (Unicode)
+;numbers
+'0'        >   U+06F0
+'1'        >   U+06F1
+'2'        >   U+06F2
+'3'        >   U+06F3
+'4'        >   U+06F4
+'5'        >   U+06F5
+'6'        >   U+06F6
+'7'        >   U+06F7
+'8'        >   U+06F8
+'9'        >   U+06F9
+
+
+
+
+pass (Unicode)
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+;punctuation
+;TODO '-' > XXXSpecial Hyphen?
+;TODO '.' >   XXXArabic Fullstop
+;',' >   U+060C ???
+;';' >   U+061B ???
+;'?' >   U+061F ???
+;TODO For some reasons there are leftover U+0301 after using the converter. Find out where things go wrong!
+pass (Unicode)
+;Kill accent leftovers
+U+0300 > ''
+U+0301 > ''
+U+0302 > ''
+U+0303 > ''
+
+
+pass (Unicode)
+
+;shadda
+U+0621 U+0621 > U+0621 U+0651
+U+0622 U+0622 > U+0622 U+0651
+U+0628 U+0628 > U+0628 U+0651
+U+062C U+062C > U+062C U+0651
+U+062D U+062D > U+062D U+0651
+U+062E U+062E > U+062E U+0651
+U+062F U+062F > U+062F U+0651
+U+0630 U+0630 > U+0630 U+0651
+U+0631 U+0631 > U+0631 U+0651
+U+0632 U+0632 > U+0632 U+0651
+U+0633 U+0633 > U+0633 U+0651
+U+0634 U+0634 > U+0634 U+0651
+U+0635 U+0635 > U+0635 U+0651
+U+0636 U+0636 > U+0636 U+0651
+U+0639 U+0639 > U+0639 U+0651
+U+0641 U+0641 > U+0641 U+0651
+U+0642 U+0642 > U+0642 U+0651
+U+0643 U+0643 > U+0643 U+0651
+U+0644 U+0644 > U+0644 U+0651
+U+0645 U+0645 > U+0645 U+0651
+U+0646 U+0646 > U+0646 U+0651
+U+0647 U+0647 > U+0647 U+0651
+U+0648 U+0648 > U+0648 U+0651
+U+0649 U+0649 > U+0649 U+0651
+U+064A U+064A > U+064A U+0651
+U+0654 U+0654 > U+0654 U+0651
+U+0655 U+0655 > U+0655 U+0651
+U+0679 U+0679 > U+0679 U+0651
+U+067E U+067E > U+067E U+0651
+U+0686 U+0686 > U+0686 U+0651
+U+0688 U+0688 > U+0688 U+0651
+U+0691 U+0691 > U+0691 U+0651
+U+06A0 U+06A0 > U+06A0 U+0651
+U+06AF U+06AF > U+06AF U+0651
+U+06D2 U+06D2 > U+06D2 U+0651
+U+062A U+062A > U+062A U+0651
+U+062B U+062B > U+062B U+0651
+U+0637 U+0637 > U+0637 U+0651
+U+0638 U+0638 > U+0638 U+0651
+U+063A U+063A > U+063A U+0651
+U+0646 U+0646 > U+0646 U+0651
+U+0683 U+0683 > U+0683 U+0651
+U+068A U+068A > U+068A U+0651
+U+0694 U+0694 > U+0694 U+0651
+U+0697 U+0697 > U+0697 U+0651
+U+0698 U+0698 > U+0698 U+0651
+U+075D U+075D > U+075D U+0651
+U+0766 U+0766 > U+0766 U+0651
+U+0767 U+0767 > U+0767 U+0651
+U+08AA U+08AA > U+08AA U+0651
+
+U+0621 U+06E1 U+0621 > U+0621 U+0651
+U+0622 U+06E1 U+0622 > U+0622 U+0651
+U+0628 U+06E1 U+0628 > U+0628 U+0651
+U+062C U+06E1 U+062C > U+062C U+0651
+U+062D U+06E1 U+062D > U+062D U+0651
+U+062E U+06E1 U+062E > U+062E U+0651
+U+062F U+06E1 U+062F > U+062F U+0651
+U+0630 U+06E1 U+0630 > U+0630 U+0651
+U+0631 U+06E1 U+0631 > U+0631 U+0651
+U+0632 U+06E1 U+0632 > U+0632 U+0651
+U+0633 U+06E1 U+0633 > U+0633 U+0651
+U+0634 U+06E1 U+0634 > U+0634 U+0651
+U+0635 U+06E1 U+0635 > U+0635 U+0651
+U+0636 U+06E1 U+0636 > U+0636 U+0651
+U+0639 U+06E1 U+0639 > U+0639 U+0651
+U+0641 U+06E1 U+0641 > U+0641 U+0651
+U+0642 U+06E1 U+0642 > U+0642 U+0651
+U+0643 U+06E1 U+0643 > U+0643 U+0651
+U+0644 U+06E1 U+0644 > U+0644 U+0651
+U+0645 U+06E1 U+0645 > U+0645 U+0651
+U+0646 U+06E1 U+0646 > U+0646 U+0651
+U+0647 U+06E1 U+0647 > U+0647 U+0651
+U+0648 U+06E1 U+0648 > U+0648 U+0651
+U+0649 U+06E1 U+0649 > U+0649 U+0651
+U+064A U+06E1 U+064A > U+064A U+0651
+U+0654 U+06E1 U+0654 > U+0654 U+0651
+U+0655 U+06E1 U+0655 > U+0655 U+0651
+U+0679 U+06E1 U+0679 > U+0679 U+0651
+U+067E U+06E1 U+067E > U+067E U+0651
+U+0686 U+06E1 U+0686 > U+0686 U+0651
+U+0688 U+06E1 U+0688 > U+0688 U+0651
+U+0691 U+06E1 U+0691 > U+0691 U+0651
+U+06A0 U+06E1 U+06A0 > U+06A0 U+0651
+U+06AF U+06E1 U+06AF > U+06AF U+0651
+U+06D2 U+06E1 U+06D2 > U+06D2 U+0651
+U+062A U+06E1 U+062A > U+062A U+0651
+U+062B U+06E1 U+062B > U+062B U+0651
+U+0637 U+06E1 U+0637 > U+0637 U+0651
+U+0638 U+06E1 U+0638 > U+0638 U+0651
+U+063A U+06E1 U+063A > U+063A U+0651
+U+0646 U+06E1 U+0646 > U+0646 U+0651
+U+0683 U+06E1 U+0683 > U+0683 U+0651
+U+068A U+06E1 U+068A > U+068A U+0651
+U+0694 U+06E1 U+0694 > U+0694 U+0651
+U+0697 U+06E1 U+0697 > U+0697 U+0651
+U+0698 U+06E1 U+0698 > U+0698 U+0651
+U+075D U+06E1 U+075D > U+075D U+0651
+U+0766 U+06E1 U+0766 > U+0766 U+0651
+U+0767 U+06E1 U+0767 > U+0767 U+0651
+U+08AA U+06E1 U+08AA > U+08AA U+0651
+
+
+
+
+
+pass (Unicode)
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+;Initial Alif on words starting with a vowel (Ayin for loanwords has to be corrected manually)
+U+064E / (#|[WordBreak]) _ > U+0627 U+064E
+U+08E6 / (#|[WordBreak]) _ > U+0627 U+08E6
+U+0650 / (#|[WordBreak]) _ > U+0627 U+0650
+U+08E4 / (#|[WordBreak]) _ > U+0627 U+08E4
+U+08E5 / (#|[WordBreak]) _ > U+0627 U+08E5
+U+064F / (#|[WordBreak]) _ > U+0627 U+064F
+
+
+
+
+pass (Unicode)
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+;Killer after syllable final consonants with the exeption of n and the w/y-glides
+class[arabic_consonant_excl_n] = ( U+0621 U+0622 U+0628 U+062C U+062D U+062E U+062F U+0630 U+0631 U+0632 U+0633 U+0634 U+0635 U+0636 U+0639 U+0641 U+0642 U+0643 U+0644 U+0645 U+0647 U+0648 U+0649 U+064A U+0654 U+0655 U+0679 U+067E U+0686 U+0688 U+0691 U+06A0 U+06AF U+06D2 U+062A U+062B U+0637 U+0638 U+063A U+0683 U+068A U+0694 U+0697 U+0698 U+075D U+0766 U+0767 U+08AA )
+class[arabic_consonant_incl_n] = ( U+0621 U+0622 U+0628 U+062C U+062D U+062E U+062F U+0630 U+0631 U+0632 U+0633 U+0634 U+0635 U+0636 U+0639 U+0641 U+0642 U+0643 U+0644 U+0645 U+0646 U+0647 U+0648 U+0649 U+064A U+0654 U+0655 U+0679 U+067E U+0686 U+0688 U+0691 U+06A0 U+06AF U+06D2 U+062A U+062B U+0637 U+0638 U+063A U+0646 U+0683 U+068A U+0694 U+0697 U+0698 U+075D U+0766 U+0767 U+08AA )
+;end of word
+;[arabic_consonant_excl_n]=a / _ (#|[WordBreak]) > @a U+06E1
+;closed syllable
+[arabic_consonant_excl_n]=a [arabic_consonant_incl_n]=b > @a U+06E1 @b
+
+
+
+
+pass (Unicode)
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+class[arabic_consonant_excl_n] = ( U+0621 U+0622 U+0628 U+062C U+062D U+062E U+062F U+0630 U+0631 U+0632 U+0633 U+0634 U+0635 U+0636 U+0639 U+0641 U+0642 U+0643 U+0645 U+0647 U+0648 U+0649 U+064A U+0654 U+0655 U+0679 U+067E U+0686 U+0688 U+0691 U+06A0 U+06AF U+06D2 U+062A U+062B U+0637 U+0638 U+063A U+0646 U+0683 U+068A U+0694 U+0697 U+0698 U+075D U+0766 U+0767 U+08AA )
+;TODO: Killer at the end of syllable that ends with a consonant = two different consonant fowllowing each other - insert killer in between [exception Nasal n & GLIDES!!!]
+;Superflous see above!
+;[arabic_consonant_excl_n]=a U+0621 > @a U+06E1 U+0621
+;[arabic_consonant_excl_n]=a U+0622 > @a U+06E1 U+0622
+;[arabic_consonant_excl_n]=a U+0628 > @a U+06E1 U+0628
+;[arabic_consonant_excl_n]=a U+062C > @a U+06E1 U+062C
+;[arabic_consonant_excl_n]=a U+062D > @a U+06E1 U+062D
+;[arabic_consonant_excl_n]=a U+062E > @a U+06E1 U+062E
+;[arabic_consonant_excl_n]=a U+062F > @a U+06E1 U+062F
+;[arabic_consonant_excl_n]=a U+0630 > @a U+06E1 U+0630
+;[arabic_consonant_excl_n]=a U+0631 > @a U+06E1 U+0631
+;[arabic_consonant_excl_n]=a U+0632 > @a U+06E1 U+0632
+;[arabic_consonant_excl_n]=a U+0633 > @a U+06E1 U+0633
+;[arabic_consonant_excl_n]=a U+0634 > @a U+06E1 U+0634
+;[arabic_consonant_excl_n]=a U+0635 > @a U+06E1 U+0635
+;[arabic_consonant_excl_n]=a U+0636 > @a U+06E1 U+0636
+;[arabic_consonant_excl_n]=a U+0639 > @a U+06E1 U+0639
+;[arabic_consonant_excl_n]=a U+0641 > @a U+06E1 U+0641
+;[arabic_consonant_excl_n]=a U+0642 > @a U+06E1 U+0642
+;[arabic_consonant_excl_n]=a U+0643 > @a U+06E1 U+0643
+;[arabic_consonant_excl_n]=a U+0644 > @a U+06E1 U+0644
+;[arabic_consonant_excl_n]=a U+0645 > @a U+06E1 U+0645
+;[arabic_consonant_excl_n]=a U+0646 > @a U+06E1 U+0646
+;[arabic_consonant_excl_n]=a U+0647 > @a U+06E1 U+0647
+;[arabic_consonant_excl_n]=a U+0648 > @a U+06E1 U+0648
+;[arabic_consonant_excl_n]=a U+0649 > @a U+06E1 U+0649
+;[arabic_consonant_excl_n]=a U+064A > @a U+06E1 U+064A
+;[arabic_consonant_excl_n]=a U+0654 > @a U+06E1 U+0654
+;[arabic_consonant_excl_n]=a U+0655 > @a U+06E1 U+0655
+;[arabic_consonant_excl_n]=a U+0679 > @a U+06E1 U+0679
+;[arabic_consonant_excl_n]=a U+067E > @a U+06E1 U+067E
+;[arabic_consonant_excl_n]=a U+0686 > @a U+06E1 U+0686
+;[arabic_consonant_excl_n]=a U+0688 > @a U+06E1 U+0688
+;[arabic_consonant_excl_n]=a U+0691 > @a U+06E1 U+0691
+;[arabic_consonant_excl_n]=a U+06A0 > @a U+06E1 U+06A0
+;[arabic_consonant_excl_n]=a U+06AF > @a U+06E1 U+06AF
+;[arabic_consonant_excl_n]=a U+06D2 > @a U+06E1 U+06D2
+;[arabic_consonant_excl_n]=a U+062A > @a U+06E1 U+062A
+;[arabic_consonant_excl_n]=a U+062B > @a U+06E1 U+062B
+;[arabic_consonant_excl_n]=a U+0637 > @a U+06E1 U+0637
+;[arabic_consonant_excl_n]=a U+0638 > @a U+06E1 U+0638
+;[arabic_consonant_excl_n]=a U+063A > @a U+06E1 U+063A
+;[arabic_consonant_excl_n]=a U+0646 > @a U+06E1 U+0646
+;[arabic_consonant_excl_n]=a U+0683 > @a U+06E1 U+0683
+;[arabic_consonant_excl_n]=a U+068A > @a U+06E1 U+068A
+;[arabic_consonant_excl_n]=a U+0694 > @a U+06E1 U+0694
+;[arabic_consonant_excl_n]=a U+0697 > @a U+06E1 U+0697
+;[arabic_consonant_excl_n]=a U+0698 > @a U+06E1 U+0698
+;[arabic_consonant_excl_n]=a U+075D > @a U+06E1 U+075D
+;[arabic_consonant_excl_n]=a U+0766 > @a U+06E1 U+0766
+;[arabic_consonant_excl_n]=a U+0767 > @a U+06E1 U+0767
+;[arabic_consonant_excl_n]=a U+08AA > @a U+06E1 U+08AA
+;
+U+0621  / _ (#|[WordBreak]) > U+0621 U+06E1
+U+0622  / _ (#|[WordBreak]) > U+0622 U+06E1
+U+0628  / _ (#|[WordBreak]) > U+0628 U+06E1
+U+062C  / _ (#|[WordBreak]) > U+062C U+06E1
+U+062D  / _ (#|[WordBreak]) > U+062D U+06E1
+U+062E  / _ (#|[WordBreak]) > U+062E U+06E1
+U+062F  / _ (#|[WordBreak]) > U+062F U+06E1
+U+0630  / _ (#|[WordBreak]) > U+0630 U+06E1
+U+0631  / _ (#|[WordBreak]) > U+0631 U+06E1
+U+0632  / _ (#|[WordBreak]) > U+0632 U+06E1
+U+0633  / _ (#|[WordBreak]) > U+0633 U+06E1
+U+0634  / _ (#|[WordBreak]) > U+0634 U+06E1
+U+0635  / _ (#|[WordBreak]) > U+0635 U+06E1
+U+0636  / _ (#|[WordBreak]) > U+0636 U+06E1
+U+0639  / _ (#|[WordBreak]) > U+0639 U+06E1
+U+0641  / _ (#|[WordBreak]) > U+0641 U+06E1
+U+0642  / _ (#|[WordBreak]) > U+0642 U+06E1
+U+0643  / _ (#|[WordBreak]) > U+0643 U+06E1
+U+0644  / _ (#|[WordBreak]) > U+0644 U+06E1
+U+0645  / _ (#|[WordBreak]) > U+0645 U+06E1
+U+0646  / _ (#|[WordBreak]) > U+0646 U+06E1
+U+0647  / _ (#|[WordBreak]) > U+0647 U+06E1
+U+0648  / _ (#|[WordBreak]) > U+0648 U+06E1
+U+0649  / _ (#|[WordBreak]) > U+0649 U+06E1
+U+064A  / _ (#|[WordBreak]) > U+064A U+06E1
+U+0654  / _ (#|[WordBreak]) > U+0654 U+06E1
+U+0655  / _ (#|[WordBreak]) > U+0655 U+06E1
+U+0679  / _ (#|[WordBreak]) > U+0679 U+06E1
+U+067E  / _ (#|[WordBreak]) > U+067E U+06E1
+U+0686  / _ (#|[WordBreak]) > U+0686 U+06E1
+U+0688  / _ (#|[WordBreak]) > U+0688 U+06E1
+U+0691  / _ (#|[WordBreak]) > U+0691 U+06E1
+U+06A0  / _ (#|[WordBreak]) > U+06A0 U+06E1
+U+06AF  / _ (#|[WordBreak]) > U+06AF U+06E1
+U+06D2  / _ (#|[WordBreak]) > U+06D2 U+06E1
+U+062A  / _ (#|[WordBreak]) > U+062A U+06E1
+U+062B  / _ (#|[WordBreak]) > U+062B U+06E1
+U+0637  / _ (#|[WordBreak]) > U+0637 U+06E1
+U+0638  / _ (#|[WordBreak]) > U+0638 U+06E1
+U+063A  / _ (#|[WordBreak]) > U+063A U+06E1
+U+0646  / _ (#|[WordBreak]) > U+0646 U+06E1
+U+0683  / _ (#|[WordBreak]) > U+0683 U+06E1
+U+068A  / _ (#|[WordBreak]) > U+068A U+06E1
+U+0694  / _ (#|[WordBreak]) > U+0694 U+06E1
+U+0697  / _ (#|[WordBreak]) > U+0697 U+06E1
+U+0698  / _ (#|[WordBreak]) > U+0698 U+06E1
+U+075D  / _ (#|[WordBreak]) > U+075D U+06E1
+U+0766  / _ (#|[WordBreak]) > U+0766 U+06E1
+U+0767  / _ (#|[WordBreak]) > U+0767 U+06E1
+U+08AA  / _ (#|[WordBreak]) > U+08AA U+06E1
+
+
+
+
+
+pass (Unicode)
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+class[arabic_consonant_incl_n_excl_j_l] = ( U+0621 U+0622 U+0628 U+062D U+062E U+062F U+0630 U+0631 U+0632 U+0633 U+0634 U+0635 U+0636 U+0639 U+0641 U+0642 U+0643 U+0645 U+0646 U+0647 U+0648 U+0649 U+064A U+0654 U+0655 U+0679 U+067E U+0686 U+0688 U+0691 U+06A0 U+06AF U+06D2 U+062A U+062B U+0637 U+0638 U+063A U+0646 U+0683 U+068A U+0694 U+0697 U+0698 U+075D U+0766 U+0767 U+08AA )
+class[arabic_vowel] = ( U+064E U+064F U+0650 U+08E4..U+08E6 )
+class[arabic_tone] = (U+08EA..U+08EF)
+;Fix i diphtong followed by a double consonant to double consonant to be followed by a U+08AC
+;There must be a problem here that kills my y???
+U+064A U+06E1 [arabic_consonant_incl_n_excl_j_l]=a U+0651 [arabic_vowel]=c [arabic_tone]=d / _ (#|[WordBreak]) > @a U+0651 @c @d U+08AC
+U+064A U+06E1 [arabic_consonant_incl_n_excl_j_l]=a U+0651 [arabic_vowel]=c / _ (#|[WordBreak]) > @a U+0651 @c U+08AC
+;TODO THIS DOESN'T WORK This is also true for -os -is 2nd person informal endings -- this is to fix that:
+U+064A U+06E1 [arabic_consonant_incl_n_excl_j_l]=a U+0651 [arabic_vowel]=c [arabic_tone]=d U+0633 / _ (#|[WordBreak]) > @a U+0651 @c @d U+08AC U+0633 U+06E1
+U+064A U+06E1 [arabic_consonant_incl_n_excl_j_l]=a U+0651 [arabic_vowel]=c U+0633 / _ (#|[WordBreak]) > @a U+0651 @c U+08AC U+0633 U+06E1
+;U+064A U+06E1 [arabic_shadda_vowel_tone]=b [arabic_shadda_vowel_tone]=c [arabic_shadda_vowel_tone]=d [arabic_consonant_incl_n]=a U+0633> @a @b @c @d U+08AC U+0633 U+06E1
+;U+064A U+06E1 [arabic_shadda_vowel_tone]=b [arabic_shadda_vowel_tone]=c [arabic_consonant_incl_n]=a U+0633> @a @b @c U+08AC U+0633 U+06E1
+;U+064A U+06E1 [arabic_shadda_vowel_tone]=b [arabic_consonant_incl_n]=a > @a @b U+08AC
+
+
+
+
+pass (Unicode)
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+class[arabic_consonant] = ( U+0621 U+0622 U+0628 U+062C U+062D U+062E U+062F U+0630 U+0631 U+0632 U+0633 U+0634 U+0635 U+0636 U+0639 U+0641 U+0642 U+0643 U+0645 U+0646 U+0647 U+0648 U+0649 U+064A U+0654 U+0655 U+0679 U+067E U+0686 U+0688 U+0691 U+06A0 U+06AF U+06D2 U+062A U+062B U+0637 U+0638 U+063A U+0646 U+0683 U+068A U+0694 U+0697 U+0698 U+075D U+0766 U+0767 U+08AA )
+;Kill shadda at the end of a word as there are no double consonants at the end
+[arabic_consonant]=a U+0651 / _ (#|[WordBreak]) > @a
+
+
+
+
+pass (Unicode)
+class[arabic_tone] = ( U+08EA..U+08EF )
+class[arabic_vowel] = ( U+064E U+064F U+0650 U+08E4 U+08E5 U+08E6 )
+;TODO ALIF insert medial alif at the beging of syllables that follow a vowel
+[arabic_vowel]=a [arabic_vowel]=b > @a U+0627 @b
+[arabic_vowel]=a [arabic_tone]=b [arabic_vowel]=c > @a @b U+0627 @c
+
+
+
+
+pass (Unicode)
+; Unicode normalization to put the shadda behind the vowels
+class[arabic_vowel] = ( U+064E U+064F U+0650 U+08E4 U+08E5 U+08E6 )
+U+0651 [arabic_vowel]=a > @a U+0651
+
+
+pass (Unicode)
+U+10D24 U+10D1D U+10D1D > U+10D25 U+10D1D
+U+10D1D U+10D24 U+10D1D > U+10D26 U+10D1D
+;TODO: Fix all other vowels
+
+
+;pass (Unicode)
+;Taking care of double spaces in case of converting a text
+;' ' ' ' > ' '
+
+
+
+
+
+
+
+
+
+
+;FOLLOWING ARE UNUSED EXAMPLES
+;Unused example for adding a special sign between two consonants
+;class[cons] = ( U+0623 U+0628 U+062A..U+063A U+0641..U+0646 U+067E U+0683 U+0686 U+068A U+0694 U+0697 U+0698 U+06A0 U+075D U+0766 U+0767 )
+;[cons]=a [cons]=b   >      @a U+0652 @b
+; take care of vowels next
+; check long (doubled) forms first
+; note that word initial forms are different
+;'aa' / (#|[WordBreak]) _  >   U+0622
+;'aa'                      >   U+064E U+0627
+;'a'  / (#|[WordBreak]) _  >   U+0623 U+064E
+;'a'                       >   U+064E
+;'ee' / (#|[WordBreak]) _  >   U+0623 U+065A U+064A
+;'ee'                      >   U+065A U+064A
+;'e'  / (#|[WordBreak]) _  >   U+0623 U+065A
+;'e'                       >   U+065A
+;'ii' / (#|[WordBreak]) _  >   U+0625 U+0650 U+064A
+;'ii'                      >   U+0650 U+064A
+;'i'  / (#|[WordBreak]) _  >   U+0625 U+0650
+;'i'                       >   U+0650
+;'oo' / (#|[WordBreak]) _  >   U+0623 U+065B U+0648
+;'oo'                      >   U+065B U+0648
+;'o'  / (#|[WordBreak]) _  >   U+0623 U+065B
+;'o'                       >   U+065B
+;'uu' / (#|[WordBreak]) _  >   U+0623 U+064F U+0648
+;'uu'                      >   U+064F U+0648
+;'u'  / (#|[WordBreak]) _  >   U+0623 U+064F
+;'u'                       >   U+064F
+
+
+;Consonants that do not appear in the shadda list - Problem?
+;U+0621
+;U+0622
+;U+062A
+;U+062B
+;U+0637
+;U+0638
+;U+063A
+;U+0646
+;U+0649
+;U+0654
+;U+0655
+;U+0679
+;U+0683
+;U+0688
+;U+068A
+;U+0691
+;U+0694
+;U+0697
+;U+0698
+;U+06AF
+;U+06D2
+;U+075D
+;U+0766
+;U+0767
+;U+08AA
+
+;Treat Nazalized I diphtongs
+;class[arabic_tone] = ( U+08EA..U+08EF )
+;class[arabic_vowel_or_tone] = ( U+064E U+064F U+0650 U+08E4..U+08E6 U+08EA..U+08EF )
+
+;Nasals:
+;Take care of nasals inbetween vowels eg. báñina
+;[consonant]=a [arabic_vowel_or_tone]=b 'ñ' U+0650 [arabic_tone]=c > U+064A U+06E1 @a @b
+;[consonant]=a [arabic_vowel_or_tone]=b 'ñ' U+0650 > U+064A U+06E1 @a @b

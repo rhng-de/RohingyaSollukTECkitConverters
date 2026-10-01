@@ -1,0 +1,444 @@
+﻿; This file was edited using TECkitMappingEditorU.exe v4.0.0.0 on 5/13/2019.
+;   Conversion Type = Unicode_to_Unicode
+;   Left-hand side font = Charis SIL Compact;12
+;   Right-hand side font = Rohingya Noories One;20.25
+;   Main Window Position = 0,0,658,713
+;   Left-hand side Character Map Window Position = 658,0,457,447
+;   Right-hand side Character Map Window Position = 657,394,457,430
+
+LHSName                 "Unicode-Rohingyalish-Roman"
+RHSName                 "Unicode-Rohingya-Hanifi"
+LHSDescription          "Unicode Rohingyalish Roman script encoding"
+RHSDescription          "Unicode Rohingya hanifi script encoding"
+Version                 "0.1"
+Contact                 "mailto:converter@rhng.de"
+RegistrationAuthority   "rhng.de"
+RegistrationName        "Rohingyalish to Hanifi conversion 0.1"
+
+; These are the possible tones (example vowel a): a (base), á (HARBHAY) >> U+10D24, áa (TAHALA) >> U+10D25, aá (TANA) >> U+10D26
+
+
+pass ( Unicode )
+class[UpperCase] = ( U+0041..U+005A U+014A U+00C7)
+class[LowerCase] = ( U+0061..U+007A U+014B U+00E7)
+[UpperCase]    >  [LowerCase]
+
+
+pass (Unicode)
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+;Exceptions for whole words
+;'alla' / (#|[WordBreak]) _ (#|[WordBreak]) > U+FDF2
+'koran' / (#|[WordBreak]) _ (#|[WordBreak]) > U+10D00 U+10D1F U+10D0C U+10D00 U+10D1D U+10D15
+'quran' / (#|[WordBreak]) _ (#|[WordBreak]) > U+10D00 U+10D1F U+10D0C U+10D00 U+10D1D U+10D15
+'Rohingya' > U+10D0C U+10D1F U+10D07 U+10D1D U+10D19 U+10D1A U+10D12 U+10D19 U+10D1D
+;'añár' > U+10D1D U+10D23 U+10D00 U+10D1D U+10D0C
+;'an' U+0303 'a' U+0301 'r' > U+10D1D U+10D23 U+10D00 U+10D1D U+10D0C
+;'aññi' Fix double nasal
+
+
+;kinna wa U+10D17
+;'uggwá' --> U+10D00 U+10D1F U+10D12 U+10D27 U+10D17 U+10D24 U+10D1D
+;kho(w)arbuli -- this is also written with kinna wa
+
+pass (Unicode)
+;Fix false guta
+'à' > 'á' 
+'è' > 'é' 
+'ì' > 'í' 
+'ò' > 'ó' 
+'ù' > 'ú'
+
+
+;pass (Unicode)
+;class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+;TODO Find out what's the equivalent in Hanifi. Maybe this is not needed.
+;'jja' / _ (#|[WordBreak]) > U+062C U+0651 U+064E
+
+
+;pass ( Unicode )
+;class[double_consonant] = ('ll' 'kk' 'thth' 'tt' 'nn')
+;class[i_vowel] = ('í' 'i')
+;class[a_vowel] = ('á' 'a')
+;class[e_vowel] = ('é' 'e')
+;TODO Find out if we need that, if it should be here or handlded later as in Fonna
+;TODO handle ai +CC+ a case -> a+CC+ya CHECK if this is true for ll and ss and cc etc.
+;[a_vowel]=a [i_vowel]=b [double_consonant]=c [a_vowel]=d > @a @c 'y' @d
+;[e_vowel]=a [i_vowel]=b [double_consonant]=c [a_vowel]=d > @a @c 'y' @d
+
+
+pass (Unicode)
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+class[consonant] = ('q' 'w' 'r' 't' 'y' 'p' 's' 'd' 'f' 'g' 'h' 'j' 'k' 'l' 'z' 'x' 'c' 'v' 'b' 'n' 'm' 'ç')
+;Two character consonants
+;Taking care of the single consonants that are written with two symbols first
+;kh at the beginning of a word: 
+'kh' / (#|[WordBreak]) _  > U+10D08
+;consonant+kh 
+[consonant]=a 'kh' > @a U+10D08
+'dh'                      > U+10D0B
+'th'                      > U+10D04
+'ng'                      > U+10D1A
+
+
+pass ( Unicode )
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F) 
+;Fix all final h because the don't exist in Rohingyalish
+'h' / _ (#|[WordBreak]) > ' '
+
+
+pass ( Unicode )
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+class[vowel] = ( 'a' 'e' 'i' 'o' 'u' 'á' 'é' 'í' 'ó' 'ú')
+class[vowel_except_i] = ( 'a' 'e' 'o' 'u' 'á' 'é' 'ó' 'ú')
+class[consonant] = ('q' 'w' 'r' 't' 'y' 'p' 's' 'd' 'f' 'g' 'h' 'j' 'k' 'l' 'z' 'x' 'c' 'v' 'b' 'n' 'm' 'ç' U+062E U+0679 U+0688 U+06A0) 
+;TODO check how glides are used in Hanifi
+;W-glide 1
+;Taking care of the w-glide in final position
+;[consonant]=a 'w' 'á' / _ (#|[WordBreak]) > @a U+08EA U+08AB U+064E
+;[consonant]=a 'w' 'a' / _ (#|[WordBreak]) > @a U+08AB U+064E
+;Glides as part of diphtongs are treated later
+;Y-glide 1
+;Taking care of the y-glide in final position TODO check if possible with other vowel
+;[consonant]=a 'y' 'á' / _ (#|[WordBreak]) > @a U+064E U+08EA U+08AC
+;[consonant]=a 'y' 'a' / _ (#|[WordBreak]) > @a U+064E U+08EC
+;Glides as part of diphtongs are treated later
+
+
+pass (Unicode)
+;TODO see how OOI is treated in Hanifi
+;Take care of ooi -> ouy
+;'óñoñiñ' > U+08E5 U+08EB U+064A U+06E1 U+10D23
+;'oñóñiñ' > U+08E5 U+08EC U+064A U+06E1 U+10D23
+;'oñoñiñ' > U+08E5 U+064A U+06E1 U+10D23
+;'óñoñi' > U+08E5 U+08EB U+064A U+06E1 U+10D23
+;'oñóñi' > U+08E5 U+08EC U+064A U+06E1 U+10D23
+;'oñoñi' > U+08E5 U+064A U+06E1 U+10D23
+;'óñoiñ' > U+08E5 U+08EB U+064A U+06E1 U+10D23
+;'oñóiñ' > U+08E5 U+08EC U+064A U+06E1 U+10D23
+;'oñoiñ' > U+08E5 U+064A U+06E1 U+10D23
+;'óoñiñ' > U+08E5 U+08EB U+064A U+06E1 U+10D23
+;'oóñiñ' > U+08E5 U+08EC U+064A U+06E1 U+10D23
+;'ooñiñ' > U+08E5 U+064A U+06E1 U+10D23
+;'óñoi' > U+08E5 U+08EB U+064A U+06E1 U+10D23
+;'oñói' > U+08E5 U+08EC U+064A U+06E1 U+10D23
+;'oñoi' > U+08E5 U+064A U+06E1 U+10D23
+;'óoñi' > U+08E5 U+08EB U+064A U+06E1 U+10D23
+;'oóñi' > U+08E5 U+08EC U+064A U+06E1 U+10D23
+;'ooñi' > U+08E5 U+064A U+06E1 U+10D23
+;'óoiñ' > U+08E5 U+08EB U+064A U+06E1 U+10D23
+;'oóiñ' > U+08E5 U+08EC U+064A U+06E1 U+10D23
+;'ooiñ' > U+08E5 U+064A U+06E1 U+10D23
+;'óoi' > U+08E5 U+08EB U+064A U+06E1
+;'oói' > U+08E5 U+08EC U+064A U+06E1
+;'ooi' > U+08E5 U+064A U+06E1
+
+
+pass ( Unicode )
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+class[vowel] = ( 'a' 'e' 'i' 'o' 'u' 'á' 'é' 'í' 'ó' 'ú')
+; These are the possible tones (example vowel a): a (base), á (HARBHAY) >> U+10D24, áa (TAHALA) >> U+10D25, aá (TANA) >> U+10D26
+;TODO find out how Hanifi writes bou -- IT'S WRITTEN ow --> U+10D21 U+10D16 [insert crying emoji here!]
+; take care of ou dipthong first:
+'o' U+0301 'uou' >  U+10D25 U+10D21 U+10D16
+'ou''o' U+0301 'u' >  U+10D26 U+10D21 U+10D16
+'o' U+0301 'ou'  >  U+10D25 U+10D21 U+10D16
+'o''o' U+0301 'u'  >  U+10D26 U+10D21 U+10D16
+'oou'  >  U+10D21 U+10D16
+'ou' U+0301  >  U+10D26 U+10D21 U+10D16
+'o' U+0301 'u'   >  U+10D24 U+10D21 U+10D16
+'ou'   >  U+10D21 U+10D16
+
+'o' U+0301 'uou' >  U+10D25 U+10D21 U+10D16
+'ouo' U+0301 'u' >  U+10D26 U+10D21 U+10D16
+'o' U+0301 'ou'  >  U+10D25 U+10D21 U+10D16
+'oo' U+0301 'u'  >  U+10D26 U+10D21 U+10D16
+'oou'  >  U+10D21 U+10D16
+'ou' U+0301  >  U+10D26 U+10D21 U+10D16
+'o' U+0301 'u'   >  U+10D24 U+10D21 U+10D16
+'ou'   >  U+10D21 U+10D16
+
+
+; These are the possible tones (example vowel a): a (base), á (HARBHAY) >> U+10D24, áa (TAHALA) >> U+10D25, aá (TANA) >> U+10D26
+pass (Unicode)
+;Take care of double vowels first and then handle diphtongs [THIS IS DIFFERENT FOR HANIFI]
+'a' U+0301 'a' U+0301 >  U+10D24 U+10D1D
+'a' U+0301 'a' >  U+10D25 U+10D1D
+'áa' >  U+10D25 U+10D1D
+'aa' U+0301 >  U+10D26 U+10D1D
+'aá' >  U+10D26 U+10D1D
+'aa' >  U+10D1D
+'e' U+0301 'e'  U+0301 >  U+10D24 U+10D20
+'e' U+0301 'e' >  U+10D25 U+10D20
+'ee' U+0301 >  U+10D26 U+10D20
+'ee' >  U+10D20
+'i' U+0301 'i'  U+0301 >  U+10D24 U+10D1E
+'i'  U+0301 'i' >  U+10D25 U+10D1E
+'ii'  U+0301 >  U+10D26 U+10D1E
+'ii' >  U+10D1E
+'o' U+0301 'o' U+0301>  U+10D24 U+10D21
+'o' U+0301 'o' >  U+10D25 U+10D21
+'oo' U+0301 >  U+10D26 U+10D21
+'oo' >  U+10D21
+'u'  U+0301 'u' U+0301 >  U+10D24 U+10D1F
+'u' U+0301 'u' >  U+10D25 U+10D1F
+'uu' U+0301 >  U+10D26 U+10D1F
+'uu' >  U+10D1F
+;with nasal
+'a' U+0301 'n' U+0303 'a' U+0301 >  U+10D24 U+10D1D U+10D23
+'a' U+0301 'n' U+0303 'a' >  U+10D25 U+10D1D U+10D23
+'a' 'n' U+0303 'a' U+0301 >  U+10D26 U+10D1D U+10D23
+'a' 'n' U+0303 'a' >  U+10D1D         U+10D23
+'e' U+0301 'n' U+0303 'e' U+0301 >  U+10D24 U+10D20 U+10D23
+'e' U+0301 'n' U+0303 'e' >  U+10D25 U+10D20 U+10D23
+'e' 'n' U+0303 'e' U+0301 >  U+10D26 U+10D20 U+10D23
+'e' 'n' U+0303 'e' >  U+10D20         U+10D23
+'i' U+0301 'n' U+0303 'i' U+0301 >  U+10D24 U+10D1E U+10D23
+'i' U+0301 'n' U+0303 'i' >  U+10D25 U+10D1E U+10D23
+'i' 'n' U+0303 'i' U+0301 >  U+10D26 U+10D1E U+10D23
+'i' 'n' U+0303 'i' >  U+10D1E         U+10D23
+'o' U+0301 'n' U+0303 'o' U+0301 >  U+10D24 U+10D21 U+10D23
+'o' U+0301 'n' U+0303 'o' >  U+10D25 U+10D21 U+10D23
+'o' 'n' U+0303 'o' U+0301 >  U+10D26 U+10D21 U+10D23
+'o' 'n' U+0303 'o' >  U+10D21         U+10D23
+'u' U+0301 'n' U+0303 'u' U+0301 >  U+10D24 U+10D1F U+10D23
+'u' U+0301 'n' U+0303 'u' >  U+10D25 U+10D1F U+10D23
+'u' 'n' U+0303 'u' U+0301 >  U+10D26 U+10D1F U+10D23
+'u' 'n' U+0303 'u' >  U+10D1F         U+10D23
+
+
+pass (Unicode)
+;TODO: handle U + vowel
+;UA
+;Take care of ua -> uwa [Nazalisation is not consistent in Rohingyalish]
+;TODO CHECK THIS AGAIN!!!
+'u' U+0301 'n' U+0303 'a'  U+0301 'n'  U+0303 > 'u' U+0301 'n' U+0303 'w' 'a' U+0301 'n' U+0303 
+'u' U+0301 'n' U+0303 'a'  'n'  U+0303 > 'u' U+0301 'n' U+0303 'w' 'a' 'n' U+0303
+'u' 'n' U+0303 'a'  U+0301 'n'  U+0303 > 'u' 'n' U+0303 'w' 'a' U+0301 'n' U+0303
+'u' 'n' U+0303 'a' 'n'  U+0303 > 'u' 'n' U+0303 'w' 'a' 'n' U+0303
+
+'u' U+0301 'n' U+0303 'a' U+0301  >'u' U+0301 'n' U+0303 'w' 'a' U+0301 'n' U+0303 
+'u' U+0301 'n' U+0303 'a' >'u' U+0301 'n' U+0303 'w' 'a' 'n' U+0303 
+'u' 'n' U+0303 'a' U+0301 >'u' 'n' U+0303 'w' 'a' U+0301 'n' U+0303 
+'u' 'n' U+0303 'a' U+0301 >'u' 'n' U+0303 'w' 'a' U+0301 'n' U+0303 
+'u' U+0301 'a' U+0301 'n' U+0303 >'u' U+0301 'n' U+0303 'w' 'a' U+0301 'n' U+0303 
+'u' U+0301 'a' 'n' U+0303>'u' U+0301 'n' U+0303 'w' 'a' 'n' U+0303 
+'u' 'a' U+0301 'n' U+0303 >'u' 'n' U+0303 'w' 'a' U+0301 'n' U+0303 
+'u' 'a' 'n' U+0303 >'u' 'n' U+0303 'w' 'a' U+0301 'n' U+0303 
+
+'u' U+0301 'a' U+0301 > 'u' U+0301 'w' 'a'
+'u' U+0301 'a'   > 'u' U+0301 'wa'  
+'ua' U+0301 > 'uwa' U+0301 
+'ua'   > 'uwa'  
+
+
+pass (Unicode)
+;regular vowels
+U+00E1     >  U+10D24 U+10D1D
+'a' U+0301 >  U+10D24 U+10D1D
+'á'        >  U+10D24 U+10D1D
+'a'        >  U+10D1D
+U+00E9     >  U+10D24 U+10D20
+'e' U+0301 >  U+10D24 U+10D20
+'é'        >  U+10D24 U+10D20
+'e'        >  U+10D20
+U+00ED     >  U+10D24 U+10D1E
+'i' U+0301 >  U+10D24 U+10D1E
+'í'        >  U+10D24 U+10D1E
+'i'        >  U+10D1E
+U+00F3     >  U+10D24 U+10D21
+'o' U+0301 >  U+10D24 U+10D21
+'ó'        >  U+10D24 U+10D21
+'o'        >  U+10D21
+U+00FA     >  U+10D24 U+10D1F
+'u' U+0301 >  U+10D24 U+10D1F
+'ú'        >  U+10D24 U+10D1F
+'u'        >  U+10D1F
+
+; Taking care of the nasal
+'ñ' > U+10D23
+'n' U+0303 > U+10D23
+
+; regular consonants
+'b'        >   U+10D01
+'c'        >   U+10D10
+'d'        >   U+10D0A
+'f'        >   U+10D09
+'g'        >   U+10D12
+'h'        >   U+10D07
+'j'        >   U+10D05
+'k'        >   U+10D11
+'l'        >   U+10D13
+'m'        >   U+10D14
+'n'        >   U+10D15
+'p'        >   U+10D02
+'q'        >    U+10D11
+'r'        >   U+10D0C
+'ç'        >   U+10D0D
+'s'        >   U+10D0F
+'t'        >   U+10D03
+'v'        >   U+10D1C
+'w'        >   U+10D16
+'x'        >   U+10D08
+'y'        >   U+10D18
+'z'        >   U+10D0E
+
+; take care of numbers
+'0'        >   U+10D30
+'1'        >   U+10D31
+'2'        >   U+10D32
+'3'        >   U+10D33
+'4'        >   U+10D34
+'5'        >   U+10D35
+'6'        >   U+10D36
+'7'        >   U+10D37
+'8'        >   U+10D38
+'9'        >   U+10D39
+
+
+pass (Unicode)
+;Add tassi between equal consonants
+U+10D00 U+10D00 > U+10D00 
+U+10D01 U+10D01 > U+10D01 U+10D27
+U+10D02 U+10D02 > U+10D02 U+10D27
+U+10D03 U+10D03 > U+10D03 U+10D27
+U+10D04 U+10D04 > U+10D04 U+10D27
+U+10D05 U+10D05 > U+10D05 U+10D27
+U+10D06 U+10D06 > U+10D06 U+10D27
+U+10D07 U+10D07 > U+10D07 U+10D27
+U+10D08 U+10D08 > U+10D08 U+10D27
+U+10D09 U+10D09 > U+10D09 U+10D27
+U+10D0A U+10D0A > U+10D0A U+10D27
+U+10D0B U+10D0B > U+10D0B U+10D27
+U+10D0C U+10D0C > U+10D0C U+10D27
+U+10D0D U+10D0D > U+10D0D U+10D27
+U+10D0E U+10D0E > U+10D0E U+10D27
+U+10D0F U+10D0F > U+10D0F U+10D27
+U+10D10 U+10D10 > U+10D10 U+10D27
+U+10D11 U+10D11 > U+10D11 U+10D27
+U+10D12 U+10D12 > U+10D12 U+10D27
+U+10D13 U+10D13 > U+10D13 U+10D27
+U+10D14 U+10D14 > U+10D14 U+10D27
+U+10D15 U+10D15 > U+10D15 U+10D27
+U+10D16 U+10D16 > U+10D16 U+10D27
+U+10D17 U+10D17 > U+10D17
+U+10D18 U+10D18 > U+10D18 U+10D27
+U+10D19 U+10D19 > U+10D19
+U+10D1A U+10D1A > U+10D1A U+10D27
+U+10D1B U+10D1B > U+10D1B U+10D27
+U+10D1C U+10D1C > U+10D1C U+10D27
+
+
+pass (unicode)
+;TODo maybe we need to transform the Rohingyalish more before it actually can be used here!!!
+;TODO found kinna ya ==> goijje, fojjonto BUT do(y)lla boydo(y)lla-- Assumption i=diphtong before double consonant is done with kinna-ya 
+class[hanifi_vowel_excl_i] = (U+10D1D U+10D1F U+10D20 U+10D21)
+class[hanifi_consonant_excl_glides] = (U+10D01..U+10D16 U+10D18 U+10D1A..U+10D1C)
+[hanifi_vowel_excl_i]=a U+10D1E [hanifi_consonant_excl_glides]=b U+10D27 > @a U+10D19 @b U+10D27
+;-o(y)jje --> U+10D19 U+10D05 U+10D27 U+10D20
+;-a(y)gge --> U+10D19 U+10D12 U+10D27 U+10D20
+;-o(y)llo/a --> U+10D19 U+10D13 U+10D27 U+10D20
+;-o(y)nno --> U+10D19 U+10D15 U+10D27 U+10D20
+;-o(y)tto --> U+10D19 U+10D03 U+10D27 U+10D20
+;(a)a(y)jj(y)a
+;NOT: -yye -> regular y but double
+;NOT for ikka -- this stays without y-glide e.g. mikka
+
+
+pass (Unicode)
+;Fix v+i --> Hanifi seems to be inconsisten here an jump between Ya and Kinna Ya
+class[hanifi_vowel_excl_i] = (U+10D1D U+10D1F U+10D20 U+10D21)
+U+10D24 [hanifi_vowel_excl_i]=a U+10D1E > U+10D25 @a U+10D18
+[hanifi_vowel_excl_i]=a U+10D1E > @a U+10D18
+[hanifi_vowel_excl_i]=a U+10D24 U+10D1E > U+10D26 @a U+10D18
+[hanifi_vowel_excl_i]=a U+10D25 U+10D1E > U+10D25 @a U+10D18
+[hanifi_vowel_excl_i]=a U+10D26 U+10D1E > U+10D26 @a U+10D18
+
+
+pass ( Unicode )
+class[hanifi_vowel_excl_i] = (U+10D1D U+10D1F U+10D20 U+10D21)
+;TODO Find out if i+v is a problem in Hanifi --> Alif or Ya or Kinna-Ya??? Seems to be inconsistent
+;TODO Find out if i+v is a problem in Hanifi --> Alif or Ya or Kinna-Ya??? Seems to be inconsistent
+;Fix i followed by a vowel (inserts the expected y)
+U+10D1E [hanifi_vowel_excl_i]=a > U+10D1E U+10D18 @a
+
+
+pass (Unicode)
+class[hanifi_vowel] = (U+10D1D..U+10D21)
+; fix Harbhay in case something went wrong before
+[hanifi_vowel]=a U+0301 > U+10D24 @a
+
+
+
+
+
+pass (Unicode)
+class[hanifi_tone] = (U+10D24..U+10D26)
+;Fix double tone marks in case something went wrong earlier
+[hanifi_tone]=a [hanifi_tone]=b > @a
+
+
+pass (Unicode)
+; fix i after nasal i-->
+U+10D23 U+10D1E > U+10D23 U+10D18
+
+
+pass (Unicode)
+; fix double y that might have been created by the i-handling above
+U+10D18 U+10D18 > U+10D18 U+10D27
+
+
+
+pass (Unicode)
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+;W-glide 2
+U+10D27 U+10D16 > U+10D27 U+10D17
+;'wá' / _ (#|[WordBreak]) > 
+;'wa' / _ (#|[WordBreak]) > 
+
+
+pass (Unicode)
+;Kill tassi in final position
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+class[hanifi_consonant] = ( U+10D00..U+10D1C )
+[hanifi_consonant]=a U+10D27 / _ (#|[WordBreak]) > @a
+
+
+pass (Unicode)
+;Add Sakin
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+class[hanifi_consonant_needing_sakin] = ( U+10D01..U+10D04 U+10D07..U+10D0A U+10D0F U+10D10 U+10D12 U+10D16 U+10D17 U+10D19 U+10D1C)
+[hanifi_consonant_needing_sakin]=a / _ (#|[WordBreak]) > @a U+10D22
+
+
+pass (Unicode)
+;Add Alif
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+class[hanifi_tone] = ( U+10D24..U+10D26 )
+class[hanifi_vowel] = ( U+10D1D..U+10D21 )
+[hanifi_vowel]=a / (#|[WordBreak]) _ > U+10D00 @a
+[hanifi_tone]=a / (#|[WordBreak]) _ > U+10D00 @a
+;TODO ALIF insert medial alif at the beging of syllables that follow a vowel
+;[hanifi_vowel]=a [hanifi_vowel]=b > @a U+10D00 @b
+;[hanifi_vowel]=a [hanifi_tone]=b [arabic_vowel]=c > @a @b U+10D00 @c
+
+
+
+
+pass (Unicode)
+U+10D24 U+10D1D U+10D1D > U+10D25 U+10D1D
+U+10D1D U+10D24 U+10D1D > U+10D26 U+10D1D
+;TODO: Fix all other vowels
+
+
+
+pass (Unicode)
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+; Fix unusual spellings
+; Fix 1st person pronouns by removing the tone and adding an Alif
+U+10D00 U+10D26 U+10D1D U+10D23 U+10D0C > U+10D00 U+10D1D U+10D23 U+10D00 U+10D0C
+; fix bou (wife)
+U+10D01 U+10D21 U+10D16 U+10D22 / (#|[WordBreak]) _ > U+10D01 U+10D26 U+10D21
+; fix bout? TODO check with native
+;U+10D01 U+10D21 U+10D16 U+10D03 U+10D22 / (#|[WordBreak]) _ >
+;manuic
+U+10D14 U+10D1D U+10D15 U+10D25 U+10D1F U+10D18 U+10D10 U+10D22 > U+10D14 U+10D1D U+10D15 U+10D1F U+10D19 U+10D10 U+10D22 

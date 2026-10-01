@@ -1,0 +1,141 @@
+﻿; This file was edited using TECkitMappingEditorU.exe v4.0.0.0 on 5/13/2019.
+;   Conversion Type = Unicode_to_Unicode
+;   Left-hand side font = Charis SIL Compact;12
+;   Right-hand side font = Scheherazade New Rohingya;20.25
+;   Main Window Position = 0,0,658,713
+;   Left-hand side Character Map Window Position = 658,0,457,447
+;   Right-hand side Character Map Window Position = 657,394,457,430
+
+LHSName                 "Unicode-Rohingyalish-Roman"
+RHSName                 "Unicode-RohingyaBCM-Roman"
+LHSDescription          "Unicode Rohingyalish Roman script encoding"
+RHSDescription          "Unicode RohingyaBCM-Roman Roman script encoding"
+Version                 "0.1"
+Contact                 "mailto:converter@rhng.de"
+RegistrationAuthority   "rhng.de"
+RegistrationName        "Convert Rohingyalish to Rohingya BCM internal script"
+
+
+pass ( Unicode )
+class[UpperCase] = ( U+0041..U+005A U+00C0..U+00DC U+014A U+00C7)
+class[LowerCase] = ( U+0061..U+007A U+00E0..U+00FC U+014B U+00E7)
+[UpperCase] > [LowerCase]
+
+
+pass ( Unicode )
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+class[consonant] = ('q' 'w' 'r' 't' 'y' 'p' 's' 'd' 'f' 'g' 'h' 'j' 'k' 'l' 'z' 'x' 'c' 'v' 'b' 'n' 'm' 'ç' U+062E U+0688 U+06A0) 
+;Two character consonants
+;Taking care of the single consonants that are written with two symbols first
+;kh at the beginning of a word: 
+'kh' / (#|[WordBreak]) _  > 'h'
+;consonant+kh 
+[consonant]=a 'kh' > 'h'
+
+pass (Unicode)
+'c'  > 'š'
+'th' > 'ṭ'
+'dh' > 'ḍ'
+'ç'  > 'ṛ'
+
+
+pass (Unicode)
+;Fix false gravis instead of acute
+'à' > 'á' 
+'è' > 'é' 
+'ì' > 'í' 
+'ò' > 'ó' 
+'ù' > 'ú'
+
+pass (Unicode)
+;OU
+; take care of ou dipthong first (including possible wrong forms):
+'óuñouñ' > U+022D
+'ouñóuñ' > U+022D
+'óñuou'  > U+022D
+'oñuóu'  > U+022D
+'óuñou'  > U+022D
+'ouñóu'  > U+022D
+'óuoñu'  > U+022D
+'ouóñu'  > U+022D
+'óuou'   > U+014D
+'ouóu'   > U+014D
+'óñoñu'  > U+022D
+'oñóñu'  > U+022D
+'óñou'   > U+022D
+'oñóu'   > U+022D
+'óoñu'   > U+022D
+'oóñu'   > U+022D
+'óou'    > U+1E53
+'oóu'    > U+1E53
+'oou'    > U+014D
+'óñoñu'  > U+022D
+'oñóñu'  > U+022D
+'oñoñu'  > U+022D
+'óñou'   > U+022D
+'oñóu'   > U+022D
+'oñou'   > U+022D
+'óoñu'   > U+022D
+'oóñu'   > U+022D
+'ooñu'   > U+022D
+'oñúñ'   > U+022D
+'óñuñ'   > U+022D
+'oñuñ'   > U+022D
+'oúñ'    > U+022D
+'óuñ'    > U+022D
+'ouñ'    > U+022D
+'oñú'    > U+022D
+'óñu'    > U+022D6
+'oñu'    > U+022D
+'oú'     > U+1E53
+'óu'     > U+1E53
+'ou'     > U+014D
+
+pass (Unicode)
+;Take care of double vowels first and then handle diphtongs [THIS IS DIFFERENT FOR HANIFI]
+'áá' > 'á'
+'áa' > 'a'
+'aá' > 'a'
+'aa' > 'a'
+'éé' > 'é'
+'ée' > 'e'
+'eé' > 'e'
+'ee' > 'e'
+'íí' > 'í'
+'íi' > 'i'
+'ií' > 'i'
+'ii' > 'i'
+'óó' > 'ó'
+'óo' > 'o'
+'oó' > 'o'
+'oo' > 'o'
+'úú' > 'ú'
+'úu' > 'u'
+'uú' > 'u'
+'uu' > 'u'
+
+;TODO: handle U + vowel
+;THIS IS NOT USED
+;'úñáñ' > 'úñwáñ'
+;'úñañ' > 'úñwañ'
+;'uñáñ' > 'uñwáñ'
+;'uñañ' > 'uñwañ'
+;'úñá'  > 'úñwáñ'
+;'úña'  > 'úñwañ'
+;'uñá'  > 'uñwáñ'
+;'uña'  > 'uñwañ'
+;'úáñ'  > 'úñwáñ'
+;'úañ'  > 'úñwañ'
+;'uáñ'  > 'uñwáñ'
+;'uañ'  > 'uñwañ'
+;'úá'   > 'úwá'
+;'úa'   > 'úwa'
+;'uá'   > 'uwá'
+;'ua'   > 'uwa'
+
+pass (Unicode)
+class[WordBreak] = ( U+0002 U+0003 U+0009 U+000A U+000C U+000D U+0020..U+002F U+003A..U+003F U+005B..U+005E U+007B..U+007E U+00A0 U+00AB U+00BB U+2000..U+206F )
+class[vowel] = ('a' 'á' 'e' 'é' 'i' 'í' 'o' 'ó' 'u' 'ú')
+;Take care of nasal
+[vowel]=a 'ñ' > a@ U+0303
+
